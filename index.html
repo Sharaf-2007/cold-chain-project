@@ -1,10 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smart Cold-Chain Monitor</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
 :root {
@@ -18,9 +19,7 @@
   --text: #f0f6ff;
   --muted: #9bb4d5;
 }
-
 * { box-sizing: border-box; }
-
 body {
   margin: 0;
   background: radial-gradient(ellipse at top, #092650, var(--bg) 65%);
@@ -28,9 +27,7 @@ body {
   font-family: "Segoe UI", Arial, sans-serif;
   min-height: 100vh;
 }
-
 button, input { font: inherit; }
-
 button {
   color: white;
   border: 1px solid #3979c0;
@@ -40,15 +37,12 @@ button {
   cursor: pointer;
   transition: transform .2s, box-shadow .2s, filter .2s;
 }
-
 button:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 22px #168bff66;
   filter: brightness(1.18);
 }
-
 button:active { transform: scale(.96); }
-
 header {
   padding: 20px 28px;
   background: linear-gradient(110deg, #06152e, #0a2a51);
@@ -58,13 +52,7 @@ header {
   justify-content: space-between;
   gap: 20px;
 }
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
+.brand { display: flex; align-items: center; gap: 15px; }
 .logo {
   font-size: 34px;
   background: linear-gradient(135deg, #147dff, #20e0ff);
@@ -72,348 +60,183 @@ header {
   border-radius: 15px;
   box-shadow: 0 0 25px #168bff55;
 }
-
 h1 { font-size: 25px; margin: 0; }
 h1 span { color: var(--cyan); }
-
-.subtitle {
-  color: var(--muted);
-  font-size: 13px;
-  margin-top: 5px;
-}
-
+.subtitle { color: var(--muted); font-size: 13px; margin-top: 5px; }
 .header-right {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  color: var(--muted);
-  font-size: 13px;
+  display: flex; gap: 20px; align-items: center;
+  color: var(--muted); font-size: 13px;
 }
-
 .live-dot {
-  display: inline-block;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--green);
-  margin-right: 6px;
-  box-shadow: 0 0 12px var(--green);
+  display: inline-block; width: 9px; height: 9px;
+  border-radius: 50%; background: var(--green);
+  margin-right: 6px; box-shadow: 0 0 12px var(--green);
 }
-
 .layout {
   display: grid;
   grid-template-columns: 205px minmax(0, 1fr);
   min-height: calc(100vh - 90px);
 }
-
 aside {
   padding: 20px 12px;
   background: #04132a;
   border-right: 1px solid #112d50;
 }
-
 .nav-item {
-  padding: 14px 12px;
-  margin-bottom: 8px;
-  border-radius: 10px;
-  color: #b5c9e8;
-  cursor: pointer;
-  transition: .2s;
+  padding: 14px 12px; margin-bottom: 8px;
+  border-radius: 10px; color: #b5c9e8;
+  cursor: pointer; transition: .2s;
 }
-
 .nav-item:hover, .nav-item.active {
   color: white;
   background: linear-gradient(100deg, #126fe0, #1035a2);
   box-shadow: 0 4px 18px #0759d955;
   transform: translateX(3px);
 }
-
 .safe-box {
-  margin-top: 45px;
-  padding: 15px 10px;
-  border: 1px solid var(--border);
-  border-radius: 13px;
-  color: var(--muted);
-  font-size: 12px;
+  margin-top: 45px; padding: 15px 10px;
+  border: 1px solid var(--border); border-radius: 13px;
+  color: var(--muted); font-size: 12px;
 }
-
 .safe-box strong {
-  display: block;
-  color: var(--green);
-  font-size: 17px;
-  margin-top: 7px;
+  display: block; color: var(--green);
+  font-size: 17px; margin-top: 7px;
 }
-
 main { padding: 24px; min-width: 0; }
-
-.section-title {
-  font-size: 22px;
-  margin: 0 0 7px;
-}
-
-.section-desc {
-  color: var(--muted);
-  font-size: 13px;
-  margin: 0 0 20px;
-}
-
+.section-title { font-size: 22px; margin: 0 0 7px; }
+.section-desc { color: var(--muted); font-size: 13px; margin: 0 0 20px; }
 .metrics {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 15px;
-  margin-bottom: 22px;
+  gap: 15px; margin-bottom: 22px;
 }
-
 .metric {
-  border-radius: 16px;
-  padding: 20px;
+  border-radius: 16px; padding: 20px;
   border: 1px solid #2861a6;
   background: linear-gradient(135deg, #103b83, #081b3e);
-  transition: .25s;
-  animation: appear .6s ease both;
+  transition: .25s; animation: appear .6s ease both;
 }
-
 .metric:nth-child(2) {
   background: linear-gradient(135deg, #064c55, #08253c);
-  border-color: #087d87;
-  animation-delay: .08s;
+  border-color: #087d87; animation-delay: .08s;
 }
-
 .metric:nth-child(3) {
   background: linear-gradient(135deg, #352b83, #161d4d);
-  border-color: #5b4cc2;
-  animation-delay: .16s;
+  border-color: #5b4cc2; animation-delay: .16s;
 }
-
 .metric:nth-child(4) {
   background: linear-gradient(135deg, #672643, #301c42);
-  border-color: #a33c66;
-  animation-delay: .24s;
+  border-color: #a33c66; animation-delay: .24s;
 }
-
-.metric:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px #0005;
-}
-
+.metric:hover { transform: translateY(-5px); box-shadow: 0 8px 25px #0005; }
 .metric-label { color: #c0d5f2; font-size: 13px; }
 .metric-icon { font-size: 24px; margin-bottom: 12px; }
 .metric-value { font-size: 27px; font-weight: 700; margin: 8px 0; }
 .metric-foot { color: #adc5e5; font-size: 11px; }
-
 .panel {
   background: linear-gradient(130deg, #0a2142ee, #07172ff5);
-  border: 1px solid var(--border);
-  border-radius: 17px;
-  padding: 22px;
-  margin-bottom: 18px;
-  box-shadow: 0 8px 25px #0002;
-  animation: appear .5s ease both;
+  border: 1px solid var(--border); border-radius: 17px;
+  padding: 22px; margin-bottom: 18px;
+  box-shadow: 0 8px 25px #0002; animation: appear .5s ease both;
 }
-
 .panel-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 8px;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 8px;
 }
-
 .panel-heading h2 { font-size: 21px; margin: 0; }
 .muted { color: var(--muted); font-size: 13px; }
-
 .simulator-layout {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 20px;
-  align-items: center;
+  display: grid; grid-template-columns: 1.5fr 1fr;
+  gap: 20px; align-items: center;
 }
-
 .controls { padding-top: 12px; }
-
 .temp-buttons {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin: 14px 0 20px;
+  display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 20px;
 }
-
 .temp-buttons button { min-width: 110px; }
-
-button.high {
-  background: linear-gradient(135deg, #ffb03b, #ed562e);
-  border-color: #ffb03b;
-}
-
-button.low {
-  background: linear-gradient(135deg, #7555ff, #3731b8);
-}
-
+button.high { background: linear-gradient(135deg, #ffb03b, #ed562e); border-color: #ffb03b; }
+button.low { background: linear-gradient(135deg, #7555ff, #3731b8); }
 button.test {
   background: linear-gradient(100deg, #00bdf3, #8a4fff, #ec5dc1);
-  border: 0;
-  font-weight: bold;
+  border: 0; font-weight: bold;
 }
-
-.custom-row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
+.custom-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 input {
-  width: 100px;
-  padding: 11px;
-  border-radius: 9px;
-  background: #0b2040;
-  border: 1px solid #31547b;
-  color: white;
-  outline: none;
+  width: 100px; padding: 11px; border-radius: 9px;
+  background: #0b2040; border: 1px solid #31547b;
+  color: white; outline: none;
 }
-
 input:focus { border-color: var(--cyan); box-shadow: 0 0 10px #23d9ff44; }
-
-.package-art {
-  text-align: center;
-  padding: 25px 10px;
-}
-
+.package-art { text-align: center; padding: 25px 10px; }
 .package-circle {
-  width: 160px;
-  height: 160px;
-  margin: auto;
-  display: grid;
-  place-items: center;
-  border: 2px solid #149de8;
-  border-radius: 50%;
+  width: 160px; height: 160px; margin: auto;
+  display: grid; place-items: center;
+  border: 2px solid #149de8; border-radius: 50%;
   background: radial-gradient(circle, #14509a, #081c3b 72%);
   box-shadow: 0 0 40px #008bff33, inset 0 0 35px #168aff22;
-  font-size: 77px;
-  animation: float 4s ease-in-out infinite;
+  font-size: 77px; animation: float 4s ease-in-out infinite;
 }
-
 .safe-range { margin-top: 23px; font-size: 13px; color: var(--cyan); }
 .safe-range strong { display: block; color: white; font-size: 24px; margin: 7px 0; }
-
 .range-bar {
-  height: 12px;
-  border-radius: 10px;
-  margin: 12px 0 6px;
+  height: 12px; border-radius: 10px; margin: 12px 0 6px;
   background: linear-gradient(90deg, #249bff, #19e0ad 42%, #ffcf54 75%, #ff4669);
 }
-
 .range-labels { display: flex; justify-content: space-between; color: var(--muted); }
-
 .alert {
-  padding: 13px 15px;
-  border-radius: 12px;
-  background: #10382f;
-  border: 1px solid #137e6b;
-  color: #69f2c6;
-  margin-top: 20px;
-  font-size: 13px;
-  transition: .2s;
+  padding: 13px 15px; border-radius: 12px;
+  background: #10382f; border: 1px solid #137e6b;
+  color: #69f2c6; margin-top: 20px; font-size: 13px; transition: .2s;
 }
-
 .alert.danger {
-  background: #4c2035;
-  border-color: #f04f79;
-  color: #ff9bb0;
-  animation: pulse 1.2s ease-in-out 2;
+  background: #4c2035; border-color: #f04f79;
+  color: #ff9bb0; animation: pulse 1.2s ease-in-out 2;
 }
-
 .history-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: 20px;
-  margin-top: 18px;
+  display: grid; grid-template-columns: 1fr 1.15fr;
+  gap: 20px; margin-top: 18px;
 }
-
 .table-wrap { overflow-x: auto; }
-
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
-
-th {
-  text-align: left;
-  padding: 13px 10px;
-  background: #122e53;
-  color: #d5e6ff;
-}
-
+th { text-align: left; padding: 13px 10px; background: #122e53; color: #d5e6ff; }
 td { padding: 12px 10px; border-bottom: 1px solid #183558; }
-
 tbody tr { transition: background .2s; }
 tbody tr:hover { background: #15355b; }
-
 .badge {
-  display: inline-block;
-  padding: 5px 9px;
-  border-radius: 20px;
-  font-size: 10px;
-  font-weight: bold;
-  white-space: nowrap;
+  display: inline-block; padding: 5px 9px; border-radius: 20px;
+  font-size: 10px; font-weight: bold; white-space: nowrap;
 }
-
 .badge.ok { background: #075c50; color: #63f3cb; }
 .badge.bad { background: #70243e; color: #ff9bb1; }
-
-.secondary {
-  background: #102c50;
-  border-color: #315780;
-  margin-top: 14px;
-}
-
+.secondary { background: #102c50; border-color: #315780; margin-top: 14px; }
 .graph-area {
-  min-width: 0;
-  background: #07172c;
-  border: 1px solid #18385d;
-  border-radius: 12px;
-  padding: 15px;
+  min-width: 0; background: #07172c;
+  border: 1px solid #18385d; border-radius: 12px; padding: 15px;
 }
-
 .graph-title { font-weight: bold; margin-bottom: 12px; }
 canvas { display: block; width: 100%; height: 240px; }
-
+#shipmentMap { height: 390px; width: 100%; border-radius: 14px; border: 1px solid #1b416c; z-index: 1; background: #0b2040; }
+.tracking-note { line-height: 1.6; }
 .hidden { display: none !important; }
-
-footer {
-  text-align: center;
-  color: #7793b8;
-  font-size: 11px;
-  padding: 10px 0 24px;
-}
-
+footer { text-align: center; color: #7793b8; font-size: 11px; padding: 10px 0 24px; }
 @keyframes appear {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-7px); }
 }
-
-@keyframes pulse {
-  50% { box-shadow: 0 0 20px #ff557744; }
-}
-
+@keyframes pulse { 50% { box-shadow: 0 0 20px #ff557744; } }
 @media (max-width: 1050px) {
   .metrics { grid-template-columns: repeat(2, 1fr); }
   .simulator-layout, .history-grid { grid-template-columns: 1fr; }
 }
-
 @media (max-width: 650px) {
   header { padding: 16px; }
   .header-right { display: none; }
   .layout { grid-template-columns: 1fr; }
-  aside {
-    display: flex;
-    overflow-x: auto;
-    padding: 8px;
-    border-right: 0;
-  }
+  aside { display: flex; overflow-x: auto; padding: 8px; border-right: 0; }
   .nav-item { white-space: nowrap; margin: 0 4px; padding: 11px; }
   .safe-box { display: none; }
   main { padding: 14px; }
@@ -421,12 +244,12 @@ footer {
   .metric { padding: 13px; }
   .metric-value { font-size: 21px; }
   .panel { padding: 15px; }
+  #shipmentMap { height: 330px; }
 }
 </style>
 </head>
 
 <body>
-
 <header>
   <div class="brand">
     <div class="logo">📦</div>
@@ -442,15 +265,14 @@ footer {
 </header>
 
 <div class="layout">
-
 <aside>
   <div class="nav-item active" data-view="dashboard">⌂ &nbsp; Dashboard</div>
   <div class="nav-item" data-view="simulator">♨ &nbsp; Live Monitoring</div>
   <div class="nav-item" data-view="history">◷ &nbsp; History</div>
   <div class="nav-item" data-view="alerts">♧ &nbsp; Alerts</div>
   <div class="nav-item" data-view="prediction">✧ &nbsp; Prediction</div>
+  <div class="nav-item" data-view="tracking">📍 &nbsp; Shipment Tracking</div>
   <div class="nav-item" data-view="settings">⚙ &nbsp; Settings</div>
-
   <div class="safe-box">
     ❄ &nbsp; Safe Temperature
     <strong>2°C – 8°C</strong>
@@ -459,7 +281,6 @@ footer {
 </aside>
 
 <main>
-
 <section id="dashboard">
   <div class="metrics">
     <div class="metric">
@@ -468,21 +289,18 @@ footer {
       <div class="metric-value" id="temperature">5.0 °C</div>
       <div class="metric-foot" id="updated">Initializing...</div>
     </div>
-
     <div class="metric">
       <div class="metric-icon">🛡️</div>
       <div class="metric-label">Package Status</div>
       <div class="metric-value" id="status">IN RANGE</div>
       <div class="metric-foot">Safe range: 2°C – 8°C</div>
     </div>
-
     <div class="metric">
       <div class="metric-icon">▤</div>
       <div class="metric-label">Total Readings</div>
       <div class="metric-value" id="total">1</div>
       <div class="metric-foot">Recorded in this session</div>
     </div>
-
     <div class="metric">
       <div class="metric-icon">⚠️</div>
       <div class="metric-label">Excursion Events</div>
@@ -498,7 +316,6 @@ footer {
     <span class="muted">Shipment CC-001</span>
   </div>
   <p class="muted">Test how your dashboard responds to different temperatures.</p>
-
   <div class="simulator-layout">
     <div class="controls">
       <div class="temp-buttons">
@@ -507,19 +324,14 @@ footer {
         <button class="high" onclick="addReading(10)">⚠ High · 10°C</button>
         <button class="low" onclick="addReading(0)">❄ Low · 0°C</button>
       </div>
-
       <div class="custom-row">
         <label for="customTemp">🌡 Enter temperature:</label>
         <input id="customTemp" type="number" value="6" step="0.1">
         <span>°C</span>
         <button class="test" onclick="testCustom()">▶ Test</button>
       </div>
-
-      <div class="alert" id="alert" role="status" aria-live="polite">
-        ✓ All systems ready.
-      </div>
+      <div class="alert" id="alert" role="status" aria-live="polite">✓ All systems ready.</div>
     </div>
-
     <div class="package-art">
       <div class="package-circle" id="packageIcon">📦</div>
       <div class="safe-range">
@@ -538,24 +350,19 @@ footer {
     <button class="secondary" style="margin:0" onclick="downloadCSV()">⇩ Download CSV</button>
   </div>
   <p class="muted">Recent temperature readings from your simulated shipment.</p>
-
   <div class="history-grid">
     <div class="table-wrap">
       <table>
-        <thead>
-          <tr><th>Time</th><th>Temperature</th><th>Status</th></tr>
-        </thead>
+        <thead><tr><th>Time</th><th>Temperature</th><th>Status</th></tr></thead>
         <tbody id="historyRows"></tbody>
       </table>
     </div>
-
     <div class="graph-area">
       <div class="graph-title">📈 Temperature Trend</div>
       <canvas id="chart"></canvas>
       <div class="muted">Green band indicates the example safe range.</div>
     </div>
   </div>
-
   <button class="secondary" onclick="resetDemo()">↻ Reset Demo</button>
 </section>
 
@@ -568,15 +375,53 @@ footer {
 <section class="panel hidden" id="prediction">
   <h2>✧ Viability Prediction</h2>
   <p class="muted">Real product viability requires validated, product-specific stability data.</p>
-  <div class="metric">
-    <div class="metric-label">Thermal Exposure Events</div>
-    <div class="metric-value" id="predictionEvents">0</div>
-    <div class="metric-foot">Out-of-range readings observed during this demo</div>
+  <div class="metrics" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin-top:18px">
+    <div class="metric"><div class="metric-label">Out-of-range readings</div><div class="metric-value" id="predictionEvents">0</div><div class="metric-foot">Observed in this demo only</div></div>
+    <div class="metric"><div class="metric-label">Recent trend</div><div class="metric-value" id="trendDirection">Waiting</div><div class="metric-foot" id="trendDetail">Record at least two readings</div></div>
+    <div class="metric"><div class="metric-label">Next demo estimate</div><div class="metric-value" id="forecastTemp">-- °C</div><div class="metric-foot">Simple trend estimate, not a real forecast</div></div>
   </div>
-  <div class="alert">
-    Prediction model not connected. No percentage is shown because temperature
-    readings alone cannot establish whether a biologic remains usable.
+  <div class="alert">This page estimates only a short-term temperature trend from simulated readings. It does not predict product viability or determine whether any medicine is usable.</div>
+</section>
+
+<section class="panel hidden" id="tracking">
+  <div class="panel-heading">
+    <h2>📍 Shipment GPS Tracking</h2>
+    <span class="badge ok">DEMO MODE</span>
   </div>
+  <p class="muted tracking-note">
+    Interactive map preview for shipment CC-001. The route and marker are simulated to demonstrate the planned GPS tracking interface; live GPS hardware is not connected.
+  </p>
+  <div class="metrics" style="grid-template-columns:repeat(auto-fit,minmax(155px,1fr));margin-top:18px">
+    <div class="metric">
+      <div class="metric-icon">📦</div>
+      <div class="metric-label">Shipment ID</div>
+      <div class="metric-value">CC-001</div>
+      <div class="metric-foot">Pharmaceutical shipment</div>
+    </div>
+    <div class="metric">
+      <div class="metric-icon">🚚</div>
+      <div class="metric-label">Tracking Status</div>
+      <div class="metric-value" id="gpsStatus" style="font-size:21px">In Transit</div>
+      <div class="metric-foot">Simulated movement</div>
+    </div>
+    <div class="metric">
+      <div class="metric-icon">🌡️</div>
+      <div class="metric-label">Shipment Temperature</div>
+      <div class="metric-value" id="gpsTemp">5.0°C</div>
+      <div class="metric-foot">Latest demo reading</div>
+    </div>
+  </div>
+  <div id="shipmentMap" aria-label="Map showing the simulated shipment route"></div>
+  <div class="alert" id="gpsMessage">
+    📡 Route preview ready. Select “Replay Route” to animate the shipment marker.
+  </div>
+  <div class="custom-row" style="margin-top:12px">
+    <button onclick="showShipmentRoute()">↻ Replay Route</button>
+    <button class="secondary" style="margin-top:0" onclick="focusShipmentMap()">◎ Fit Route on Map</button>
+  </div>
+  <p class="muted" style="margin-top:14px">
+    Map data © OpenStreetMap contributors. An internet connection is required to load map tiles.
+  </p>
 </section>
 
 <section class="panel hidden" id="settings">
@@ -592,112 +437,101 @@ footer {
   <p class="muted">These settings are for simulation only. Use the specific product's approved storage requirements in a real system.</p>
 </section>
 
-<footer>
-  Educational prototype · Simulated data only · Not for real medicine release decisions
-</footer>
-
+<footer>Educational prototype · Simulated data only · Not for real medicine release decisions</footer>
 </main>
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-
-let minTemp = 2;
-let maxTemp = 8;
-
-let readings = JSON.parse(
-  localStorage.getItem("coldchainReadings") || "[]"
-);
-
-let excursions = readings.filter(
-  reading => reading.status === "EXCURSION"
-);
-
-
-function inRange(temp) {
-  return temp >= minTemp && temp <= maxTemp;
+let minTemp = Number(localStorage.getItem("coldchainMinTemp") ?? 2);
+let maxTemp = Number(localStorage.getItem("coldchainMaxTemp") ?? 8);
+if (!Number.isFinite(minTemp) || !Number.isFinite(maxTemp) || minTemp >= maxTemp) {
+  minTemp = 2; maxTemp = 8;
 }
+function safeReadArray(key) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key) || "[]");
+    return Array.isArray(value) ? value : [];
+  } catch (error) {
+    return [];
+  }
+}
+let readings = safeReadArray("coldchainReadings");
+let alertEvents = safeReadArray("coldchainAlertEvents");
+let excursions = readings.filter(reading => reading.status === "EXCURSION");
+
+function inRange(temp) { return temp >= minTemp && temp <= maxTemp; }
 
 function addReading(temp) {
   if (!Number.isFinite(temp) || temp < -100 || temp > 100) {
     alert("Enter a valid temperature between -100°C and 100°C.");
     return;
   }
-
   const ok = inRange(temp);
   const now = new Date();
-
   const record = {
     time: now.toLocaleTimeString(),
     timestamp: now.getTime(),
     temperature: temp,
     status: ok ? "IN RANGE" : "EXCURSION"
   };
+  readings.unshift(record);
+  if (!ok) {
+    excursions.unshift(record);
+    alertEvents.unshift({
+      type: "EXCURSION",
+      time: record.time,
+      timestamp: record.timestamp,
+      temperature: temp,
+      message: "Temperature outside configured limits"
+    });
+    alertEvents = alertEvents.slice(0, 100);
+    localStorage.setItem("coldchainAlertEvents", JSON.stringify(alertEvents));
+  }
+  localStorage.setItem("coldchainReadings", JSON.stringify(readings));
 
-readings.unshift(record);
-
-if (!ok) excursions.unshift(record);
-
-// Save the readings in this browser.
-localStorage.setItem(
-  "coldchainReadings",
-  JSON.stringify(readings)
-);
-
-  document.getElementById("temperature").textContent =
-    temp.toFixed(1) + " °C";
-
+  document.getElementById("temperature").textContent = temp.toFixed(1) + " °C";
+  document.getElementById("gpsTemp").textContent = temp.toFixed(1) + "°C";
   const status = document.getElementById("status");
   status.textContent = ok ? "IN RANGE" : "EXCURSION";
   status.style.color = ok ? "#7bf5cf" : "#ff7898";
-
   document.getElementById("total").textContent = readings.length;
   document.getElementById("excursions").textContent = excursions.length;
-  document.getElementById("updated").textContent =
-    "Last updated: " + record.time;
-
+  document.getElementById("updated").textContent = "Last updated: " + record.time;
   const alertBox = document.getElementById("alert");
   alertBox.className = ok ? "alert" : "alert danger";
   alertBox.textContent = ok
     ? "✓ Reading recorded. Temperature is within the example range."
     : "⚠ WARNING: Temperature excursion detected! Check the shipment.";
-
   document.getElementById("packageIcon").textContent = ok ? "📦" : "⚠️";
-
   renderHistory();
   renderAlerts();
+  updatePrediction();
   drawChart();
 }
 
 function testCustom() {
   const input = document.getElementById("customTemp").value;
-
   if (input.trim() === "") {
     alert("Please enter a temperature.");
     return;
   }
-
   addReading(Number(input));
 }
 
 function renderHistory() {
   const tbody = document.getElementById("historyRows");
   tbody.replaceChildren();
-
   readings.slice(0, 12).forEach(r => {
     const tr = document.createElement("tr");
-
     const time = document.createElement("td");
     time.textContent = r.time;
-
     const temperature = document.createElement("td");
-    temperature.textContent = r.temperature.toFixed(1) + " °C";
-
+    temperature.textContent = Number(r.temperature).toFixed(1) + " °C";
     const statusCell = document.createElement("td");
     const badge = document.createElement("span");
-    badge.className = "badge " +
-      (r.status === "IN RANGE" ? "ok" : "bad");
+    badge.className = "badge " + (r.status === "IN RANGE" ? "ok" : "bad");
     badge.textContent = r.status;
-
     statusCell.appendChild(badge);
     tr.append(time, temperature, statusCell);
     tbody.appendChild(tr);
@@ -707,122 +541,105 @@ function renderHistory() {
 function renderAlerts() {
   const box = document.getElementById("alertList");
   box.replaceChildren();
-
-  if (!excursions.length) {
-    box.textContent = "No excursions recorded.";
+  if (!alertEvents.length) {
+    box.textContent = "No alert events recorded yet. Test a high or low temperature to try an alert.";
+    document.getElementById("predictionEvents").textContent = excursions.length;
     return;
   }
-
-  excursions.forEach(r => {
+  alertEvents.slice(0, 50).forEach(event => {
     const item = document.createElement("div");
-    item.className = "alert danger";
-    item.textContent = r.time + " — " +
-      r.temperature.toFixed(1) + "°C — Excursion detected";
+    item.className = event.type === "EXCURSION" ? "alert danger" : "alert";
+    item.textContent = event.time + " — " + Number(event.temperature).toFixed(1) +
+      "°C — " + event.message;
     box.appendChild(item);
   });
+  document.getElementById("predictionEvents").textContent = excursions.length;
+}
 
-  document.getElementById("predictionEvents").textContent =
-    excursions.length;
+function updatePrediction() {
+  const direction = document.getElementById("trendDirection");
+  const detail = document.getElementById("trendDetail");
+  const forecast = document.getElementById("forecastTemp");
+  document.getElementById("predictionEvents").textContent = excursions.length;
+  if (readings.length < 2) {
+    direction.textContent = "Waiting";
+    detail.textContent = "Record at least two readings";
+    forecast.textContent = "-- °C";
+    return;
+  }
+  const latest = Number(readings[0].temperature);
+  const previous = Number(readings[1].temperature);
+  const change = latest - previous;
+  const estimate = latest + change;
+  direction.textContent = Math.abs(change) < 0.05 ? "Stable" : change > 0 ? "Rising" : "Falling";
+  detail.textContent = "Latest change: " + (change > 0 ? "+" : "") + change.toFixed(1) + "°C";
+  forecast.textContent = estimate.toFixed(1) + " °C";
 }
 
 function drawChart() {
   const canvas = document.getElementById("chart");
+  if (!canvas) return;
   const rect = canvas.getBoundingClientRect();
+  if (rect.width <= 0) return;
   const dpr = window.devicePixelRatio || 1;
-
-  canvas.width = Math.max(300, rect.width * dpr);
+  canvas.width = Math.max(300, Math.round(rect.width * dpr));
   canvas.height = 240 * dpr;
-
   const ctx = canvas.getContext("2d");
-  ctx.scale(dpr, dpr);
-
-  const w = canvas.width / dpr;
-  const h = 240;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const w = canvas.width / dpr, h = 240;
   const left = 37, right = w - 12, top = 15, bottom = h - 30;
-
   const minY = Math.min(-2, minTemp - 2);
   const maxY = Math.max(12, maxTemp + 2);
   const y = t => bottom - (t - minY) / (maxY - minY) * (bottom - top);
-
   ctx.clearRect(0, 0, w, h);
-
   ctx.fillStyle = "#092c3b";
   ctx.fillRect(left, y(maxTemp), right-left, y(minTemp)-y(maxTemp));
-
   ctx.font = "11px Segoe UI";
   ctx.textAlign = "right";
-
   for (let t = Math.ceil(minY/2)*2; t <= maxY; t += 2) {
     ctx.strokeStyle = "#1b3554";
-    ctx.beginPath();
-    ctx.moveTo(left, y(t));
-    ctx.lineTo(right, y(t));
-    ctx.stroke();
-
-    ctx.fillStyle = "#9bb4d5";
-    ctx.fillText(t + "°", left - 7, y(t) + 4);
+    ctx.beginPath(); ctx.moveTo(left, y(t)); ctx.lineTo(right, y(t)); ctx.stroke();
+    ctx.fillStyle = "#9bb4d5"; ctx.fillText(t + "°", left - 7, y(t) + 4);
   }
-
   const points = readings.slice(0, 25).reverse();
-  if (!points.length) return;
-
-  const x = i => points.length === 1
-    ? (left + right) / 2
-    : left + i * (right - left) / (points.length - 1);
-
+  if (!points.length) {
+    ctx.textAlign = "center"; ctx.fillStyle = "#9bb4d5";
+    ctx.fillText("No readings yet", (left + right) / 2, (top + bottom) / 2);
+    return;
+  }
+  const x = i => points.length === 1 ? (left + right) / 2 : left + i * (right - left) / (points.length - 1);
   ctx.beginPath();
+  points.forEach((r, i) => i === 0 ? ctx.moveTo(x(i), y(r.temperature)) : ctx.lineTo(x(i), y(r.temperature)));
+  ctx.strokeStyle = "#26c7ff"; ctx.lineWidth = 2.5;
+  ctx.shadowColor = "#168bff"; ctx.shadowBlur = 8; ctx.stroke(); ctx.shadowBlur = 0;
   points.forEach((r, i) => {
-    if (i === 0) ctx.moveTo(x(i), y(r.temperature));
-    else ctx.lineTo(x(i), y(r.temperature));
+    ctx.beginPath(); ctx.arc(x(i), y(r.temperature), 4, 0, Math.PI * 2);
+    ctx.fillStyle = inRange(r.temperature) ? "#20e0ad" : "#ff5577"; ctx.fill();
   });
-
-  ctx.strokeStyle = "#26c7ff";
-  ctx.lineWidth = 2.5;
-  ctx.shadowColor = "#168bff";
-  ctx.shadowBlur = 8;
-  ctx.stroke();
-  ctx.shadowBlur = 0;
-
-  points.forEach((r, i) => {
-    ctx.beginPath();
-    ctx.arc(x(i), y(r.temperature), 4, 0, Math.PI * 2);
-    ctx.fillStyle = inRange(r.temperature) ? "#20e0ad" : "#ff5577";
-    ctx.fill();
-  });
-
-  ctx.textAlign = "left";
-  ctx.fillStyle = "#9bb4d5";
-  ctx.fillText("Older", left, h-8);
-  ctx.textAlign = "right";
-  ctx.fillText("Latest", right, h-8);
+  ctx.textAlign = "left"; ctx.fillStyle = "#9bb4d5"; ctx.fillText("Older", left, h-8);
+  ctx.textAlign = "right"; ctx.fillText("Latest", right, h-8);
 }
 
 function downloadCSV() {
   const rows = [["Time", "Temperature C", "Status"]];
   readings.forEach(r => rows.push([r.time, r.temperature, r.status]));
-
   const csv = rows.map(row => row.map(value =>
     '"' + String(value).replace(/"/g, '""') + '"'
   ).join(",")).join("\r\n");
-
-  const url = URL.createObjectURL(
-    new Blob([csv], {type: "text/csv;charset=utf-8;"})
-  );
-
+  const url = URL.createObjectURL(new Blob([csv], {type: "text/csv;charset=utf-8;"}));
   const a = document.createElement("a");
-  a.href = url;
-  a.download = "coldchain-history.csv";
-  a.click();
+  a.href = url; a.download = "coldchain-history.csv"; a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 function resetDemo() {
   readings = [];
   excursions = [];
-
-localStorage.removeItem("coldchainReadings");
-
+  alertEvents = [];
+  localStorage.removeItem("coldchainReadings");
+  localStorage.removeItem("coldchainAlertEvents");
   document.getElementById("temperature").textContent = "-- °C";
+  document.getElementById("gpsTemp").textContent = "-- °C";
   document.getElementById("status").textContent = "NO DATA";
   document.getElementById("status").style.color = "#9bb4d5";
   document.getElementById("total").textContent = "0";
@@ -832,139 +649,188 @@ localStorage.removeItem("coldchainReadings");
   document.getElementById("alert").textContent = "Demo reset. Select a temperature to begin.";
   document.getElementById("packageIcon").textContent = "📦";
   document.getElementById("predictionEvents").textContent = "0";
-
-  renderHistory();
-  renderAlerts();
-  drawChart();
+  updatePrediction(); renderHistory(); renderAlerts(); drawChart();
 }
 
 function updateLimits() {
   const min = Number(document.getElementById("minLimit").value);
   const max = Number(document.getElementById("maxLimit").value);
-
   if (!Number.isFinite(min) || !Number.isFinite(max) || min >= max) {
     alert("Maximum temperature must be greater than minimum.");
     return;
   }
-
-  minTemp = min;
-  maxTemp = max;
-
+  minTemp = min; maxTemp = max;
+  localStorage.setItem("coldchainMinTemp", String(minTemp));
+  localStorage.setItem("coldchainMaxTemp", String(maxTemp));
   document.querySelectorAll(".safe-box strong, .safe-range strong")
     .forEach(el => el.textContent = minTemp + "°C – " + maxTemp + "°C");
-
-  // Re-evaluate stored readings under the new demo limits.
   excursions = [];
   readings.forEach(r => {
     r.status = inRange(r.temperature) ? "IN RANGE" : "EXCURSION";
     if (r.status === "EXCURSION") excursions.push(r);
   });
-
   document.getElementById("excursions").textContent = excursions.length;
   document.getElementById("predictionEvents").textContent = excursions.length;
-
   const latest = readings[0];
   if (latest) {
     const status = document.getElementById("status");
     status.textContent = latest.status;
     status.style.color = inRange(latest.temperature) ? "#7bf5cf" : "#ff7898";
-    document.getElementById("alert").className =
-      inRange(latest.temperature) ? "alert" : "alert danger";
-    document.getElementById("alert").textContent =
-      inRange(latest.temperature)
-        ? "✓ Latest reading is within the updated range."
-        : "⚠ WARNING: Latest reading is outside the updated range.";
-    document.getElementById("packageIcon").textContent =
-      inRange(latest.temperature) ? "📦" : "⚠️";
+    document.getElementById("alert").className = inRange(latest.temperature) ? "alert" : "alert danger";
+    document.getElementById("alert").textContent = inRange(latest.temperature)
+      ? "✓ Latest reading is within the updated range."
+      : "⚠ WARNING: Latest reading is outside the updated range.";
+    document.getElementById("packageIcon").textContent = inRange(latest.temperature) ? "📦" : "⚠️";
   }
-
-  renderHistory();
-  renderAlerts();
-  drawChart();
+  localStorage.setItem("coldchainReadings", JSON.stringify(readings));
+  renderHistory(); renderAlerts(); updatePrediction(); drawChart();
 }
 
 function updateClock() {
-  document.getElementById("clock").textContent =
-    new Date().toLocaleString();
+  document.getElementById("clock").textContent = new Date().toLocaleString();
 }
 
+/* Simulated shipment map: no live GPS coordinates are received. */
+let shipmentMap = null;
+let shipmentMarker = null;
+let routeLine = null;
+let routeTimer = null;
+let routeIndex = 0;
+
+const shipmentRoute = [
+  [13.0827, 80.2707], // Chennai - illustrative start
+  [13.0358, 80.2134], // Guindy area - illustrative waypoint
+  [12.9784, 80.2210], // Velachery area - illustrative waypoint
+  [12.9249, 80.1000]  // Illustrative destination, not a verified road route
+];
+
+function initializeShipmentMap() {
+  const mapElement = document.getElementById("shipmentMap");
+  if (!mapElement || shipmentMap) return;
+  if (typeof L === "undefined") {
+    document.getElementById("gpsMessage").className = "alert danger";
+    document.getElementById("gpsMessage").textContent =
+      "Map library could not load. Check your internet connection and refresh the page.";
+    return;
+  }
+
+  shipmentMap = L.map("shipmentMap").setView(shipmentRoute[0], 11);
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(shipmentMap);
+
+  L.marker(shipmentRoute[0]).addTo(shipmentMap)
+    .bindPopup("📦 Origin: Chennai");
+  L.marker(shipmentRoute[shipmentRoute.length - 1]).addTo(shipmentMap)
+    .bindPopup("🏁 Illustrative destination");
+
+  routeLine = L.polyline(shipmentRoute, {
+    color: "#23d9ff", weight: 4, dashArray: "8, 8"
+  }).addTo(shipmentMap);
+
+  shipmentMarker = L.marker(shipmentRoute[0]).addTo(shipmentMap)
+    .bindPopup("CC-001 — Simulated shipment location");
+  shipmentMap.fitBounds(routeLine.getBounds(), {padding: [25, 25]});
+  setTimeout(() => shipmentMap && shipmentMap.invalidateSize(), 250);
+}
+
+function focusShipmentMap() {
+  if (!shipmentMap) initializeShipmentMap();
+  if (shipmentMap && routeLine) shipmentMap.fitBounds(routeLine.getBounds(), {padding: [25, 25]});
+}
+
+function showShipmentRoute() {
+  if (!shipmentMap) initializeShipmentMap();
+  if (!shipmentMap || !shipmentMarker) return;
+  clearInterval(routeTimer);
+  routeIndex = 0;
+  shipmentMarker.setLatLng(shipmentRoute[0]);
+  shipmentMarker.setPopupContent("CC-001 — Simulated shipment location");
+  document.getElementById("gpsStatus").textContent = "In Transit";
+  document.getElementById("gpsMessage").className = "alert";
+  document.getElementById("gpsMessage").textContent = "▶ Simulated route replay started.";
+  shipmentMap.panTo(shipmentRoute[0]);
+
+  routeTimer = setInterval(() => {
+    routeIndex++;
+    if (routeIndex >= shipmentRoute.length) {
+      clearInterval(routeTimer);
+      document.getElementById("gpsStatus").textContent = "Route End";
+      document.getElementById("gpsMessage").textContent =
+        "✓ Demo route completed. This was simulated movement, not live GPS.";
+      shipmentMarker.bindPopup("CC-001 — Demo route completed").openPopup();
+      return;
+    }
+    shipmentMarker.setLatLng(shipmentRoute[routeIndex]);
+    shipmentMarker.setPopupContent("CC-001 — Simulated route point " + (routeIndex + 1));
+    shipmentMap.panTo(shipmentRoute[routeIndex]);
+  }, 1200);
+}
+
+const viewIds = ["dashboard", "simulator", "history", "alerts", "prediction", "tracking", "settings"];
 document.querySelectorAll(".nav-item").forEach(item => {
   item.addEventListener("click", () => {
-    document.querySelectorAll(".nav-item").forEach(n =>
-      n.classList.remove("active")
-    );
+    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
     item.classList.add("active");
-
     const view = item.dataset.view;
-
-    ["dashboard", "simulator", "history", "alerts",
-     "prediction", "settings"].forEach(id => {
-      document.getElementById(id).classList.toggle(
-        "hidden", id !== view &&
-        !(view === "dashboard" &&
-          ["simulator", "history"].includes(id))
-      );
+    viewIds.forEach(id => {
+      const show = id === view || (view === "dashboard" && ["simulator", "history"].includes(id));
+      document.getElementById(id).classList.toggle("hidden", !show);
     });
-
-    if (view === "dashboard") {
-      document.getElementById("simulator").classList.remove("hidden");
-      document.getElementById("history").classList.remove("hidden");
+    if (view === "history") setTimeout(drawChart, 50);
+    if (view === "tracking") {
+      setTimeout(() => {
+        initializeShipmentMap();
+        if (shipmentMap) shipmentMap.invalidateSize();
+      }, 100);
     }
-
-    if (view === "history") drawChart();
   });
 });
 
-window.addEventListener("resize", drawChart);
-
+window.addEventListener("resize", () => {
+  drawChart();
+  if (shipmentMap) shipmentMap.invalidateSize();
+});
 
 function restoreDashboard() {
   updateClock();
-
+  document.getElementById("minLimit").value = minTemp;
+  document.getElementById("maxLimit").value = maxTemp;
+  document.querySelectorAll(".safe-box strong, .safe-range strong")
+    .forEach(el => el.textContent = minTemp + "°C – " + maxTemp + "°C");
+  excursions = [];
+  readings.forEach(r => {
+    r.status = inRange(Number(r.temperature)) ? "IN RANGE" : "EXCURSION";
+    if (r.status === "EXCURSION") excursions.push(r);
+  });
   if (readings.length > 0) {
     const latest = readings[0];
-
-    document.getElementById("temperature").textContent =
-      latest.temperature.toFixed(1) + " °C";
-
+    document.getElementById("temperature").textContent = Number(latest.temperature).toFixed(1) + " °C";
+    document.getElementById("gpsTemp").textContent = Number(latest.temperature).toFixed(1) + "°C";
     const status = document.getElementById("status");
     status.textContent = latest.status;
-    status.style.color =
-      latest.status === "IN RANGE" ? "#7bf5cf" : "#ff7898";
-
+    status.style.color = latest.status === "IN RANGE" ? "#7bf5cf" : "#ff7898";
     document.getElementById("total").textContent = readings.length;
-    document.getElementById("excursions").textContent =
-      excursions.length;
-
-    document.getElementById("updated").textContent =
-      "Last recorded: " + latest.time;
-
-    document.getElementById("packageIcon").textContent =
-      latest.status === "IN RANGE" ? "📦" : "⚠️";
-
-    document.getElementById("alert").textContent =
-      latest.status === "IN RANGE"
-        ? "✓ Latest saved reading is within the example range."
-        : "⚠ Latest saved reading shows an excursion.";
-
-    document.getElementById("alert").className =
-      latest.status === "IN RANGE" ? "alert" : "alert danger";
+    document.getElementById("excursions").textContent = excursions.length;
+    document.getElementById("updated").textContent = "Last recorded: " + latest.time;
+    document.getElementById("packageIcon").textContent = latest.status === "IN RANGE" ? "📦" : "⚠️";
+    document.getElementById("alert").textContent = latest.status === "IN RANGE"
+      ? "✓ Latest saved reading is within the example range."
+      : "⚠ Latest saved reading shows an excursion.";
+    document.getElementById("alert").className = latest.status === "IN RANGE" ? "alert" : "alert danger";
   } else {
     document.getElementById("temperature").textContent = "-- °C";
+    document.getElementById("gpsTemp").textContent = "-- °C";
     document.getElementById("status").textContent = "NO DATA";
     document.getElementById("total").textContent = "0";
     document.getElementById("excursions").textContent = "0";
   }
-
-  renderHistory();
-  renderAlerts();
-  drawChart();
+  renderHistory(); renderAlerts(); updatePrediction(); drawChart();
 }
 
 restoreDashboard();
 setInterval(updateClock, 1000);
-
 </script>
-
 </body>
 </html>
