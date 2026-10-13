@@ -841,6 +841,55 @@ function restoreDashboard() {
 
 restoreDashboard();
 setInterval(updateClock, 1000);
+  // ===== ThingSpeak Live Temperature Connection =====
+const THINGSPEAK_CHANNEL_ID = "3533841";
+const THINGSPEAK_READ_API_KEY = "AU4NEJJCA6QGCAVK";
+async function fetchThingSpeakTemperature() {
+  try {
+    const url =
+      `https://api.thingspeak.com/channels/${THINGSPEAK_CHANNEL_ID}/feeds/last.json?api_key=${THINGSPEAK_READ_API_KEY}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("HTTP error: " + response.status);
+    }
+    const data = await response.json();
+    if (data.field1 === null || data.field1 === undefined) {
+      throw new Error("No temperature data received");
+    }
+    const temperature = Number(data.field1);
+    if (!Number.isFinite(temperature)) {
+      throw new Error("Invalid temperature received");
+    }
+    const timestamp = data.created_at
+      ? new Date(data.created_at).toLocaleString()
+      : new Date().toLocaleString();
+    const latestReading = {
+      temperature: temperature,
+      time: timestamp,
+      status: inRange(temperature) ? "IN RANGE" : "EXCURSION"
+    };
+    // Put the newest live reading first.
+    readings = [
+      latestReading,
+      ...readings.filter(r => r.source !== "ThingSpeak")
+    ].slice(0, 100);
+    readings[0].source = "ThingSpeak";
+    // Update the existing dashboard.
+    restoreDashboard();
+    // Show that the temperature came from ThingSpeak.
+    document.getElementById("updated").textContent =
+      "Live ThingSpeak reading: " + timestamp;
+    console.log("ThingSpeak temperature:", temperature, "°C");
+  } catch (error) {
+    console.error("ThingSpeak connection failed:", error);
+    document.getElementById("updated").textContent =
+      "ThingSpeak connection failed. Check the Read API Key and internet.";
+  }
+}
+// Fetch immediately, then refresh every 20 seconds.
+fetchThingSpeakTemperature();
+setInterval(fetchThingSpeakTemperature, 20000);
 </script>
+  
 </body>
 </html>
