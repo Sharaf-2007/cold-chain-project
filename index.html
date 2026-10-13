@@ -272,10 +272,316 @@ footer { text-align: center; color: #7793b8; font-size: 11px; padding: 10px 0 24
   .panel { padding: 15px; }
   #shipmentMap { height: 330px; }
 }
+/* SMART COOLING & HEATING CONTROLLER */
+.climate-controller {
+  background: linear-gradient(135deg, #101f35, #172d46);
+  border: 1px solid #31516b;
+  border-radius: 18px;
+  padding: 22px;
+  margin: 22px 0;
+  color: #f4f8ff;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+}
+
+.climate-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.climate-heading h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.auto-badge {
+  background: #123d32;
+  color: #65f0b0;
+  padding: 7px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.climate-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.climate-device {
+  background: rgba(255,255,255,0.055);
+  border: 1px solid #344b62;
+  border-radius: 14px;
+  padding: 18px;
+  transition: 0.25s ease;
+}
+
+.climate-device.device-active {
+  border-color: #46e2ac;
+  box-shadow: 0 0 18px rgba(70, 226, 172, 0.12);
+}
+
+.device-icon {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.device-name {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.device-status {
+  color: #aabbd0;
+  font-size: 13px;
+}
+
+.device-status.active {
+  color: #62f0b0;
+  font-weight: 700;
+}
+
+.climate-reading {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 12px;
+}
+
+.climate-reading small {
+  color: #b3c3d5;
+}
+
+.climate-reading strong {
+  display: block;
+  font-size: 27px;
+  margin: 7px 0;
+}
+
+.climate-message {
+  margin-top: 14px;
+  padding: 13px;
+  border-radius: 10px;
+  background: #153b31;
+  color: #75f0b8;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.climate-message.warning {
+  background: #512b18;
+  color: #ffc17a;
+}
+
+.climate-message.danger {
+  background: #501e2b;
+  color: #ff8798;
+  animation: climatePulse 1s infinite alternate;
+}
+
+@keyframes climatePulse {
+  from { opacity: 1; }
+  to { opacity: 0.65; }
+}
+
+@media (max-width: 520px) {
+  .climate-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== LOGIN PORTAL ===== */
+#loginScreen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse at top, #092650, #020b1c 75%);
+}
+
+#loginScreen[hidden],
+#dashboardApp[hidden] {
+  display: none !important;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 430px;
+  padding: 34px;
+  background: linear-gradient(145deg, #0a2142, #061329);
+  border: 1px solid #1b416c;
+  border-radius: 22px;
+  box-shadow: 0 0 45px #168bff22;
+}
+
+.login-logo {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 18px;
+  display: grid;
+  place-items: center;
+  font-size: 36px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #147dff, #20e0ff);
+  box-shadow: 0 0 25px #168bff55;
+}
+
+.login-card h2 {
+  margin: 0;
+  text-align: center;
+  font-size: 26px;
+}
+
+.login-card h2 span {
+  color: var(--cyan);
+}
+
+.login-description {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 10px 0 28px;
+}
+
+.login-card label {
+  display: block;
+  color: #d5e6ff;
+  font-size: 13px;
+  margin: 16px 0 8px;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 13px;
+  background: #0b2040;
+  color: white;
+  border: 1px solid #31547b;
+  border-radius: 10px;
+  outline: none;
+}
+
+.login-card input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 10px #23d9ff33;
+}
+
+.login-password-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-password-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.login-password-row button {
+  padding: 11px;
+  background: #102c50;
+  border-color: #315780;
+}
+
+.login-submit {
+  width: 100%;
+  margin-top: 22px;
+  font-weight: bold;
+}
+
+.login-error {
+  color: #ff7898;
+  font-size: 13px;
+  min-height: 18px;
+  margin: 12px 0 0;
+}
+
+.login-security {
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 22px;
+}
+
+#logoutButton {
+  background: linear-gradient(135deg, #b82d4d, #791b39);
+  border-color: #ff5577;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 25px 20px;
+  }
+}
 </style>
 </head>
 
+
 <body>
+
+<!-- LOGIN PORTAL -->
+<section id="loginScreen">
+  <div class="login-card">
+
+    <div class="login-logo">📦</div>
+
+    <h2>Smart Cold-Chain <span>Monitor</span></h2>
+
+    <p class="login-description">
+      Welcome back! Sign in to access your shipment
+      monitoring dashboard.
+    </p>
+
+    <form id="loginForm">
+      <label for="loginEmail">Email Address</label>
+      <input
+        type="email"
+        id="loginEmail"
+        placeholder="Enter your email"
+        autocomplete="username"
+        required
+      >
+
+      <label for="loginPassword">Password</label>
+
+      <div class="login-password-row">
+        <input
+          type="password"
+          id="loginPassword"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+          required
+        >
+
+        <button type="button" id="toggleLoginPassword">
+          Show
+        </button>
+      </div>
+
+      <p id="loginError" class="login-error"
+         role="alert" aria-live="polite"></p>
+
+      <button type="submit" class="login-submit">
+        Sign In →
+      </button>
+    </form>
+
+    <div class="login-security">
+      ❄ Smart monitoring · Demo access portal
+    </div>
+
+  </div>
+</section>
+
+<!-- EXISTING DASHBOARD STARTS HERE -->
+<div id="dashboardApp" hidden>
+
 <header>
   <div class="brand">
     <div class="logo">📦</div>
@@ -297,7 +603,9 @@ footer { text-align: center; color: #7793b8; font-size: 11px; padding: 10px 0 24
   <div class="nav-item" data-view="history"><span aria-hidden="true">◷</span><span>History</span></div>
   <div class="nav-item" data-view="alerts"><span aria-hidden="true">♧</span><span>Alerts</span></div>
   <div class="nav-item" data-view="prediction"><span aria-hidden="true">✧</span><span>Prediction</span></div>
-  <div class="nav-item" data-view="tracking"><span aria-hidden="true">📍</span><span>Shipment Tracking</span></div>
+  <div class="nav-item" data-view="tracking"><span aria-hidden="true">⌖</span><span>Shipment Tracking</span></div>
+  <div class="nav-item" data-view="emergency"><span aria-hidden="true">🆘</span><span>Emergency SOS</span></div>
+  <div class="nav-item" data-view="climateController"><span aria-hidden="true">❄</span><span>Cooling &amp; Heating</span></div>
   <div class="nav-item" data-view="settings"><span aria-hidden="true">⚙</span><span>Settings</span></div>
   <div class="safe-box">
     ❄ &nbsp; Safe Temperature
@@ -309,7 +617,7 @@ footer { text-align: center; color: #7793b8; font-size: 11px; padding: 10px 0 24
 <main>
 <section id="dashboard">
   <div class="metrics">
-    <div class="metric">
+    <div class="metric">  
       <div class="metric-icon">🌡️</div>
       <div class="metric-label">Current Temperature</div>
       <div class="metric-value" id="temperature">5.0 °C</div>
@@ -376,7 +684,7 @@ footer { text-align: center; color: #7793b8; font-size: 11px; padding: 10px 0 24
         SAFE RANGE
         <strong>2°C – 8°C</strong>
         <div class="range-bar"></div>
-        <div class="range-labels"><span>2°C</span><span>8°C</span></div>
+        <div class="range-labels"><span id="minRangeLabel">2°C</span><span id="maxRangeLabel">8°C</span></div>
       </div>
     </div>
   </div>
@@ -461,6 +769,46 @@ footer { text-align: center; color: #7793b8; font-size: 11px; padding: 10px 0 24
     Map data © OpenStreetMap contributors. An internet connection is required to load map tiles.
   </p>
 </section>
+<!-- SMART COOLING & HEATING CONTROLLER -->
+<section class="climate-controller" id="climateController">
+
+  <div class="climate-heading">
+    <h2>❄️ Smart Climate Controller</h2>
+    <span class="auto-badge">● AUTOMATIC MODE</span>
+  </div>
+
+  <div class="climate-grid">
+
+    <div class="climate-device" id="coolingCard">
+      <div class="device-icon">🌀</div>
+      <div class="device-name">Cooling Fan</div>
+      <div class="device-status" id="coolingStatus">
+        Waiting for temperature...
+      </div>
+    </div>
+
+    <div class="climate-device" id="heatingCard">
+      <div class="device-icon">♨️</div>
+      <div class="device-name">Heating System</div>
+      <div class="device-status" id="heatingStatus">
+        Waiting for temperature...
+      </div>
+    </div>
+
+  </div>
+
+  <div class="climate-reading">
+    <small>Latest controller temperature</small>
+    <strong id="climateTemperature">-- °C</strong>
+    <small id="climateRange">Configured demo range: 2°C–8°C</small>
+  </div>
+
+  <div class="climate-message" id="climateMessage" role="status"
+       aria-live="polite">
+    Waiting for a valid temperature reading.
+  </div>
+
+</section>
 
 <section class="panel hidden" id="settings">
   <h2>⚙ Demonstration Settings</h2>
@@ -475,9 +823,33 @@ footer { text-align: center; color: #7793b8; font-size: 11px; padding: 10px 0 24
   <p class="muted">These settings are for simulation only. Use the specific product's approved storage requirements in a real system.</p>
 </section>
 
+
+
+<section class="panel hidden" id="emergency">
+  <h2>🆘 Vehicle Accident &amp; Emergency SOS</h2>
+  <p class="muted">DEMO ONLY — this page does not detect real crashes or contact emergency services.</p>
+  <div id="sosStatus" role="status" aria-live="assertive" style="padding:16px;border-radius:12px;border:1px solid #64748b;margin:12px 0;background:#f1f5f9;color:#0f172a;font-weight:700;">
+    🟢 SYSTEM READY — waiting for a simulated sensor signal.
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0;">
+    <button type="button" id="simulateCrashButton" onclick="triggerDemoSOS()" style="background:#b91c1c;color:#fff;padding:12px 16px;border:0;border-radius:8px;cursor:pointer;font-weight:700;">🆘 Inject Simulated Crash Signal</button>
+    <button type="button" id="acknowledgeSOSButton" onclick="acknowledgeDemoSOS()" style="padding:12px 16px;border-radius:8px;cursor:pointer;">Acknowledge / Reset Demo</button>
+  </div>
+  <div class="metrics" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));">
+    <div class="metric"><div class="metric-label">Last Event</div><div class="metric-value" id="sosLastEvent" style="font-size:18px;">None</div><div class="metric-foot">Local browser demo record</div></div>
+    <div class="metric"><div class="metric-label">Alert Status</div><div class="metric-value" id="sosAlertState" style="font-size:18px;">READY</div><div class="metric-foot">No real emergency message sent</div></div>
+  </div>
+  <h3>Emergency Event Log</h3>
+  <div id="sosEventLog" aria-live="polite">No simulated events recorded.</div>
+  <p class="muted">For real automatic detection, connect a crash/impact sensor or vehicle telematics device and build a separate, tested hardware-to-server alert path. This demo's button imitates a sensor signal only.</p>
+</section>
+
 <footer>Educational prototype · Simulated data only · Not for real medicine release decisions</footer>
 </main>
 </div>
+
+</div>
+<!-- EXISTING DASHBOARD ENDS HERE -->
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -707,8 +1079,17 @@ function updateLimits() {
   minTemp = min; maxTemp = max;
   localStorage.setItem("coldchainMinTemp", String(minTemp));
   localStorage.setItem("coldchainMaxTemp", String(maxTemp));
+  // Refresh the controller using the new settings.
+document.getElementById("climateRange").textContent =
+  "Configured demo range: " + minTemp + "°C–" + maxTemp + "°C";
+
+if (lastClimateTemperature !== null) {
+  updateClimateController(lastClimateTemperature);
+}
   document.querySelectorAll(".safe-box strong, .safe-range strong")
     .forEach(el => el.textContent = minTemp + "°C – " + maxTemp + "°C");
+    document.getElementById("minRangeLabel").textContent = minTemp + "°C";
+document.getElementById("maxRangeLabel").textContent = maxTemp + "°C";
   excursions = [];
   readings.forEach(r => {
     r.status = inRange(r.temperature) ? "IN RANGE" : "EXCURSION";
@@ -813,7 +1194,76 @@ function showShipmentRoute() {
   }, 1200);
 }
 
-const viewIds = ["dashboard", "simulator", "history", "alerts", "prediction", "tracking", "settings"];
+
+// ===== EMERGENCY SOS DEMO (SIMULATED SENSOR INPUT ONLY) =====
+let demoSOSActive = false;
+let demoSOSEvents = [];
+try {
+  const savedSOSEvents = JSON.parse(localStorage.getItem("coldchainDemoSOSEvents") || "[]");
+  if (Array.isArray(savedSOSEvents)) demoSOSEvents = savedSOSEvents;
+} catch (error) {
+  demoSOSEvents = [];
+}
+
+function renderDemoSOSEvents() {
+  const log = document.getElementById("sosEventLog");
+  const last = document.getElementById("sosLastEvent");
+  if (!log || !last) return;
+  if (!demoSOSEvents.length) {
+    log.textContent = "No simulated events recorded.";
+    last.textContent = "None";
+    return;
+  }
+  last.textContent = demoSOSEvents[0].time;
+  log.replaceChildren();
+  demoSOSEvents.slice(0, 10).forEach(event => {
+    const row = document.createElement("p");
+    row.textContent = "🆘 SIMULATED SOS — " + event.time + " — " + event.message;
+    log.appendChild(row);
+  });
+}
+
+function triggerDemoSOS() {
+  // This button imitates a connected sensor signal; it is not real crash detection.
+  demoSOSActive = true;
+  const now = new Date();
+  const event = {
+    time: now.toLocaleString(),
+    timestamp: now.getTime(),
+    message: "Simulated vehicle impact signal received. Dashboard SOS activated."
+  };
+  demoSOSEvents.unshift(event);
+  demoSOSEvents = demoSOSEvents.slice(0, 50);
+  try { localStorage.setItem("coldchainDemoSOSEvents", JSON.stringify(demoSOSEvents)); } catch (error) {}
+
+  const status = document.getElementById("sosStatus");
+  status.textContent = "🆘 SIMULATED SOS ACTIVE — crash signal received at " + event.time + ". No emergency services were contacted.";
+  status.style.background = "#7f1d1d";
+  status.style.color = "#ffffff";
+  status.style.borderColor = "#ef4444";
+  document.getElementById("sosAlertState").textContent = "DEMO SOS ACTIVE";
+  document.getElementById("simulateCrashButton").disabled = true;
+  document.getElementById("simulateCrashButton").textContent = "SOS Active — Acknowledge to Reset";
+  renderDemoSOSEvents();
+}
+
+function acknowledgeDemoSOS() {
+  demoSOSActive = false;
+  const status = document.getElementById("sosStatus");
+  status.textContent = "🟢 DEMO RESET — waiting for a simulated sensor signal. No real emergency was reported.";
+  status.style.background = "#f1f5f9";
+  status.style.color = "#0f172a";
+  status.style.borderColor = "#64748b";
+  document.getElementById("sosAlertState").textContent = "READY";
+  const button = document.getElementById("simulateCrashButton");
+  button.disabled = false;
+  button.textContent = "🆘 Inject Simulated Crash Signal";
+}
+
+renderDemoSOSEvents();
+// ===== END EMERGENCY SOS DEMO =====
+
+const viewIds = ["dashboard", "simulator", "history", "alerts", "prediction", "tracking", "emergency", "climateController", "settings"];
 document.querySelectorAll(".nav-item").forEach(item => {
   item.addEventListener("click", () => {
     document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
@@ -895,6 +1345,7 @@ async function fetchThingSpeakTemperature() {
     if (!Number.isFinite(temperature)) {
       throw new Error("Invalid temperature received");
     }
+    updateClimateController(temperature);
     const timestamp = data.created_at
       ? new Date(data.created_at).toLocaleString()
       : new Date().toLocaleString();
@@ -909,11 +1360,17 @@ async function fetchThingSpeakTemperature() {
       ...readings.filter(r => r.source !== "ThingSpeak")
     ].slice(0, 100);
     readings[0].source = "ThingSpeak";
-    // Update the existing dashboard.
-    restoreDashboard();
-    // Show that the temperature came from ThingSpeak.
-    document.getElementById("updated").textContent =
-      "Live ThingSpeak reading: " + timestamp;
+    // Update the dashboard with the latest live reading.
+ restoreDashboard();
+
+ document.getElementById("temperature").textContent =
+   temperature.toFixed(1) + " °C";
+
+ document.getElementById("gpsTemp").textContent =
+   temperature.toFixed(1) + "°C";
+
+ document.getElementById("updated").textContent =
+   "Live ThingSpeak reading: " + timestamp;
     console.log("ThingSpeak temperature:", temperature, "°C");
   } catch (error) {
     console.error("ThingSpeak connection failed:", error);
@@ -988,7 +1445,227 @@ function silenceAlertSound() {
   alertSoundEnabled = false;
   stopAlertBeeping();
 }
+/* SMART AUTOMATIC COOLING & HEATING CONTROLLER */
+
+// Demo thresholds only. Set these to the limits specified
+// for the particular biologic being transported.
+// Read the current limits from the Settings page.
+function getClimateMin() {
+  return minTemp;
+}
+
+function getClimateMax() {
+  return maxTemp;
+}
+
+// Hysteresis thresholds are calculated from the saved limits.
+
+let coolingActive = false;
+let heatingActive = false;
+let lastClimateTemperature = null;
+
+function updateClimateController(temperature) {
+  const temp = Number(temperature);
+
+  if (!Number.isFinite(temp)) {
+    setClimateMessage(
+      "No valid temperature reading. Controller is waiting.",
+      "warning"
+    );
+    return;
+  }
+
+  lastClimateTemperature = temp;
+
+  // Read the latest limits saved in Settings.
+  const min = getClimateMin();
+  const max = getClimateMax();
+
+  // Calculate the switch-off thresholds.
+  const fanOffAt = max - 0.5;
+  const heaterOffAt = min + 0.5;
+
+  // Automatic control with hysteresis.
+  if (temp > max) {
+    coolingActive = true;
+    heatingActive = false;
+  } else if (temp < min) {
+    heatingActive = true;
+    coolingActive = false;
+  } else {
+    if (coolingActive && temp <= fanOffAt) {
+      coolingActive = false;
+    }
+
+    if (heatingActive && temp >= heaterOffAt) {
+      heatingActive = false;
+    }
+  }
+
+  // Update the displayed temperature and configured range.
+  document.getElementById("climateTemperature").textContent =
+    temp.toFixed(2) + " °C";
+
+  document.getElementById("climateRange").textContent =
+    "Configured demo range: " + min + "°C–" + max + "°C";
+
+  // Update cooling fan display.
+  const coolingCard = document.getElementById("coolingCard");
+  const coolingStatus = document.getElementById("coolingStatus");
+
+  coolingCard.classList.toggle("device-active", coolingActive);
+  coolingStatus.classList.toggle("active", coolingActive);
+
+  coolingStatus.textContent = coolingActive
+    ? "● FAN ON — Cooling requested"
+    : "○ FAN OFF";
+
+  // Update heating system display.
+  const heatingCard = document.getElementById("heatingCard");
+  const heatingStatus = document.getElementById("heatingStatus");
+
+  heatingCard.classList.toggle("device-active", heatingActive);
+  heatingStatus.classList.toggle("active", heatingActive);
+
+  heatingStatus.textContent = heatingActive
+    ? "● HEATING ON — Heating requested"
+    : "○ HEATING OFF";
+
+  // Update the overall system message.
+  if (temp > max) {
+    setClimateMessage(
+      "HIGH TEMPERATURE! Cooling fan activated in simulation.",
+      "danger"
+    );
+  } else if (temp < min) {
+    setClimateMessage(
+      "LOW TEMPERATURE! Heating activated in simulation.",
+      "danger"
+    );
+  } else if (coolingActive) {
+    setClimateMessage(
+      "Temperature is recovering. Cooling remains active.",
+      "warning"
+    );
+  } else if (heatingActive) {
+    setClimateMessage(
+      "Temperature is recovering. Heating remains active.",
+      "warning"
+    );
+  } else {
+    setClimateMessage(
+      "TEMPERATURE NORMAL — No cooling or heating required.",
+      "normal"
+    );
+  }
+}
+
+function setClimateMessage(message, state) {
+  const box = document.getElementById("climateMessage");
+  if (!box) return;
+
+  box.textContent = message;
+  box.classList.remove("warning", "danger");
+
+  if (state === "warning") {
+    box.classList.add("warning");
+  } else if (state === "danger") {
+    box.classList.add("danger");
+  }
+}
 </script>
-  
+
+<script>
+// ===== SMART COLD-CHAIN DEMO LOGIN =====
+
+(() => {
+  const DEMO_EMAIL = "demo@example.com";
+  const DEMO_PASSWORD = "ColdChain123!";
+
+  const loginScreen = document.getElementById("loginScreen");
+  const dashboard = document.getElementById("dashboardApp");
+  const loginForm = document.getElementById("loginForm");
+  const emailInput = document.getElementById("loginEmail");
+  const passwordInput = document.getElementById("loginPassword");
+  const errorBox = document.getElementById("loginError");
+  const toggleButton = document.getElementById("toggleLoginPassword");
+
+  function showDashboard() {
+    loginScreen.hidden = true;
+    dashboard.hidden = false;
+
+    // Redraw the existing chart after the dashboard appears.
+    if (typeof drawChart === "function") {
+      requestAnimationFrame(() => {
+        drawChart();
+
+        if (typeof shipmentMap !== "undefined" && shipmentMap) {
+          shipmentMap.invalidateSize();
+        }
+      });
+    }
+  }
+
+  function showLogin() {
+    dashboard.hidden = true;
+    loginScreen.hidden = false;
+    passwordInput.value = "";
+  }
+
+  // Show/hide password.
+  toggleButton.addEventListener("click", () => {
+    const shouldShow = passwordInput.type === "password";
+
+    passwordInput.type = shouldShow ? "text" : "password";
+    toggleButton.textContent = shouldShow ? "Hide" : "Show";
+  });
+
+  // Validate the demo credentials.
+  loginForm.addEventListener("submit", event => {
+    event.preventDefault();
+    errorBox.textContent = "";
+
+    const email = emailInput.value.trim().toLowerCase();
+    const password = passwordInput.value;
+
+    if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
+      sessionStorage.setItem("coldchainDemoLogin", "true");
+      passwordInput.value = "";
+      showDashboard();
+    } else {
+      errorBox.textContent =
+        "Incorrect email or password. Please try again.";
+      passwordInput.value = "";
+      passwordInput.focus();
+    }
+  });
+
+  // Add logout to the existing header without replacing it.
+  const headerRight = document.querySelector(".header-right");
+  const logoutButton = document.createElement("button");
+
+  logoutButton.id = "logoutButton";
+  logoutButton.type = "button";
+  logoutButton.textContent = "Log Out";
+  logoutButton.addEventListener("click", () => {
+    sessionStorage.removeItem("coldchainDemoLogin");
+    showLogin();
+    errorBox.textContent = "";
+    emailInput.focus();
+  });
+
+  if (headerRight) {
+    headerRight.appendChild(logoutButton);
+  }
+
+  // Restore the demo login for this browser tab.
+  if (sessionStorage.getItem("coldchainDemoLogin") === "true") {
+    showDashboard();
+  } else {
+    showLogin();
+  }
+})();
+</script>
 </body>
 </html>
+
