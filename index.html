@@ -199,8 +199,17 @@ input:focus { border-color: var(--cyan); box-shadow: 0 0 10px #23d9ff44; }
   color: #69f2c6; margin-top: 20px; font-size: 13px; transition: .2s;
 }
 .alert.danger {
-  background: #4c2035; border-color: #f04f79;
-  color: #ff9bb0; animation: pulse 1.2s ease-in-out 2;
+  background: #ff123f;
+  border: 3px solid #ffffff;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 900;
+  animation: alertBlink 0.6s steps(2, start) infinite;
+  box-shadow: 0 0 25px #ff123f;
+}
+@keyframes alertBlink {
+  0%, 100% { background: #7a001b; box-shadow: 0 0 10px #ff123f; }
+  50% { background: #ff123f; box-shadow: 0 0 30px #ff123f; }
 }
 .history-grid {
   display: grid; grid-template-columns: 1fr 1.15fr;
@@ -340,7 +349,11 @@ footer { text-align: center; color: #7793b8; font-size: 11px; padding: 10px 0 24
         <span>°C</span>
         <button class="test" onclick="testCustom()">▶ Test</button>
       </div>
-      <div class="alert" id="alert" role="status" aria-live="polite">✓ All systems ready.</div>
+      <div class="alert" id="alert" role="status" aria-live="assertive">✓ All systems ready.</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+        <button type="button" onclick="enableAlertSound()">🔔 Enable Alert Sound</button>
+        <button type="button" class="secondary" onclick="silenceAlertSound()">🔇 Silence</button>
+      </div>
     </div>
     <div class="package-art">
       <div class="package-circle" id="packageIcon">📦</div>
@@ -472,6 +485,71 @@ let excursions = readings.filter(reading => reading.status === "EXCURSION");
 
 function inRange(temp) { return temp >= minTemp && temp <= maxTemp; }
 
+// Alert sound is opt-in because browsers require a user click before audio can play.
+let alertSoundEnabled = false;
+let alertBeepTimer = null;
+let alertAudioContext = null;
+
+function enableAlertSound() {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) {
+    alert("Audio is not supported in this browser.");
+    return;
+  }
+  if (!alertAudioContext) alertAudioContext = new AudioContextClass();
+  alertSoundEnabled = true;
+  const resumeAudio = alertAudioContext.state === "suspended"
+    ? alertAudioContext.resume()
+    : Promise.resolve();
+  resumeAudio.then(() => {
+    if (document.getElementById("alert").classList.contains("danger")) {
+      startAlertBeeping();
+    } else {
+      playAlertBeep(); // Short test beep when sound is enabled.
+    }
+  }).catch(() => {
+    alert("Your browser could not start audio. Please try enabling sound again.");
+  });
+}
+
+function playAlertBeep() {
+  if (!alertSoundEnabled || !alertAudioContext || alertAudioContext.state !== "running") return;
+  const oscillator = alertAudioContext.createOscillator();
+  const gain = alertAudioContext.createGain();
+  oscillator.type = "sine";
+  oscillator.frequency.value = 880;
+  gain.gain.setValueAtTime(0.0001, alertAudioContext.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.12, alertAudioContext.currentTime + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, alertAudioContext.currentTime + 0.25);
+  oscillator.connect(gain);
+  gain.connect(alertAudioContext.destination);
+  oscillator.start();
+  oscillator.stop(alertAudioContext.currentTime + 0.26);
+}
+
+function startAlertBeeping() {
+  if (!alertSoundEnabled || alertBeepTimer) return;
+  playAlertBeep();
+  alertBeepTimer = setInterval(playAlertBeep, 1000);
+}
+
+function stopAlertBeeping() {
+  if (alertBeepTimer !== null) {
+    clearInterval(alertBeepTimer);
+    alertBeepTimer = null;
+  }
+}
+
+function syncAlertSound(isOutOfRange) {
+  if (isOutOfRange) startAlertBeeping();
+  else stopAlertBeeping();
+}
+
+function silenceAlertSound() {
+  alertSoundEnabled = false;
+  stopAlertBeeping();
+}
+
 function addReading(temp) {
   if (!Number.isFinite(temp) || temp < -100 || temp > 100) {
     alert("Enter a valid temperature between -100°C and 100°C.");
@@ -512,7 +590,8 @@ function addReading(temp) {
   alertBox.className = ok ? "alert" : "alert danger";
   alertBox.textContent = ok
     ? "✓ Reading recorded. Temperature is within the example range."
-    : "⚠ WARNING: Temperature excursion detected! Check the shipment.";
+    : "🚨 CRITICAL ALERT! Temperature: " + temp.toFixed(1) + "°C. OUT OF RANGE!";
+  syncAlertSound(!ok);
   document.getElementById("packageIcon").textContent = ok ? "📦" : "⚠️";
   renderHistory();
   renderAlerts();
@@ -829,7 +908,9 @@ function restoreDashboard() {
       ? "✓ Latest saved reading is within the example range."
       : "⚠ Latest saved reading shows an excursion.";
     document.getElementById("alert").className = latest.status === "IN RANGE" ? "alert" : "alert danger";
+    syncAlertSound(latest.status !== "IN RANGE");
   } else {
+    syncAlertSound(false);
     document.getElementById("temperature").textContent = "-- °C";
     document.getElementById("gpsTemp").textContent = "-- °C";
     document.getElementById("status").textContent = "NO DATA";
